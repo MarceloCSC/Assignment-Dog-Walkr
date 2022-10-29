@@ -18,7 +18,7 @@ namespace DogWalkr.Repositories
     {
         public async Task Create(PasseadorCadastrarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -73,7 +73,7 @@ namespace DogWalkr.Repositories
 
         public Passeador Get(Guid id)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -125,7 +125,7 @@ namespace DogWalkr.Repositories
 
         public Passeador Get(string login, string senha)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -178,7 +178,7 @@ namespace DogWalkr.Repositories
 
         public async Task Update(PasseadorEditarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -232,7 +232,7 @@ namespace DogWalkr.Repositories
 
         public void Delete(Guid id)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -249,7 +249,7 @@ namespace DogWalkr.Repositories
 
         public string Like(Guid passeadorId, Guid cachorroId, Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -286,7 +286,7 @@ namespace DogWalkr.Repositories
 
         public void Ignore(Guid passeadorId, Guid cachorroId, Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -311,7 +311,7 @@ namespace DogWalkr.Repositories
 
         public List<UsuarioListarMatchesViewModel> GetMatches(Guid id)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -409,7 +409,7 @@ namespace DogWalkr.Repositories
 
         public List<PasseadorProcurarViewModel> Search(Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 

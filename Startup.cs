@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MySqlConnector;
 
 namespace DogWalkr
 {
@@ -20,6 +21,8 @@ namespace DogWalkr
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddTransient(_ => new MySqlConnection(Configuration["ConnectionStrings:Default"]));
 
             services.Configure<CookiePolicyOptions>(options =>
             {

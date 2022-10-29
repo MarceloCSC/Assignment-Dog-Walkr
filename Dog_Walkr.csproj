@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Projeto_Integrador</RootNamespace>
+    <RootNamespace>DogWalkr</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Geocoding.Microsoft" Version="4.0.1" />

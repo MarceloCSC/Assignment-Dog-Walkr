@@ -12,7 +12,7 @@ namespace DogWalkr.Repositories
     {
         public void Create(CachorroCadastrarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -75,7 +75,7 @@ namespace DogWalkr.Repositories
 
         public Cachorro Get(Guid id)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -120,7 +120,7 @@ namespace DogWalkr.Repositories
 
         public List<Cachorro> GetAll(Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -170,7 +170,7 @@ namespace DogWalkr.Repositories
 
         public void Update(CachorroEditarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -208,7 +208,7 @@ namespace DogWalkr.Repositories
 
         public void Delete(Guid cachorroId, Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
@@ -242,7 +242,7 @@ namespace DogWalkr.Repositories
 
         public List<CachorroProcurarViewModel> Search(Guid passeadorId)
         {
-            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
+            using MySqlConnection connection = new MySqlConnection();
 
             connection.Open();
 
