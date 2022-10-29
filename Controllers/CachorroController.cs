@@ -1,5 +1,4 @@
 ﻿using System;
-using DogWalkr.Models;
 using DogWalkr.Repositories;
 using DogWalkr.ViewModels.Cachorro;
 using Microsoft.AspNetCore.Hosting;

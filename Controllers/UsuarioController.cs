@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DogWalkr.Models;
 using DogWalkr.Repositories;
 using DogWalkr.ViewModels.Shared;
 using DogWalkr.ViewModels.Usuario;
