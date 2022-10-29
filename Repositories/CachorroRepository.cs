@@ -201,7 +201,7 @@ namespace DogWalkr.Repositories
 
         public async Task Delete(Guid cachorroId, Guid usuarioId)
         {
-            string query = "DELETE FROM cachorros_curtidos WHERE cachorro_id = @id; DELETE FROM cachorros_ignorados WHERE cachorro_id = @id; DELETE FROM cachorros WHERE id = @id";
+            string query = "DELETE FROM cachorros_like WHERE cachorro_id = @id; DELETE FROM cachorros_unlike WHERE cachorro_id = @id; DELETE FROM cachorros WHERE id = @id";
 
             using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
@@ -253,7 +253,7 @@ namespace DogWalkr.Repositories
 
             await dataReader.CloseAsync();
 
-            string searchQuery = "SELECT * FROM cachorros WHERE NOT EXISTS (SELECT null FROM cachorros_curtidos WHERE cachorros.id = cachorros_curtidos.cachorro_id AND passeador_id = @id) AND NOT EXISTS (SELECT null FROM cachorros_ignorados WHERE cachorros.id = cachorros_ignorados.cachorro_id AND passeador_id = @id)";
+            string searchQuery = "SELECT * FROM cachorros WHERE NOT EXISTS (SELECT null FROM cachorros_like WHERE cachorros.id = cachorros_like.cachorro_id AND passeador_id = @id) AND NOT EXISTS (SELECT null FROM cachorros_unlike WHERE cachorros.id = cachorros_unlike.cachorro_id AND passeador_id = @id)";
 
             command.CommandText = searchQuery;
 

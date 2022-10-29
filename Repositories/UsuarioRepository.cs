@@ -187,7 +187,7 @@ namespace DogWalkr.Repositories
 
         public async Task<string> Like(Guid usuarioId, Guid passeadorId)
         {
-            string likeQuery = "INSERT IGNORE INTO passeadores_curtidos (usuario_id, passeador_id) VALUES (@usuario_id, @passeador_id)";
+            string likeQuery = "INSERT IGNORE INTO passeadores_like (usuario_id, passeador_id) VALUES (@usuario_id, @passeador_id)";
 
             using MySqlCommand command = new MySqlCommand(likeQuery, _database.Connection);
 
@@ -196,7 +196,7 @@ namespace DogWalkr.Repositories
 
             await command.ExecuteNonQueryAsync();
 
-            string matchQuery = "INSERT IGNORE INTO matches (usuario_id, passeador_id) SELECT usuario_id, passeador_id FROM cachorros_curtidos WHERE EXISTS (SELECT null FROM cachorros_curtidos WHERE usuario_id = @usuario_id AND passeador_id = @passeador_id)";
+            string matchQuery = "INSERT IGNORE INTO matches (usuario_id, passeador_id) SELECT usuario_id, passeador_id FROM cachorros_like WHERE EXISTS (SELECT null FROM cachorros_like WHERE usuario_id = @usuario_id AND passeador_id = @passeador_id)";
 
             using MySqlCommand sqlCommand = new MySqlCommand(matchQuery, _database.Connection);
 
@@ -219,7 +219,7 @@ namespace DogWalkr.Repositories
 
         public async Task Ignore(Guid usuarioId, Guid passeadorId)
         {
-            string ignoreQuery = "INSERT IGNORE INTO passeadores_ignorados (usuario_id, passeador_id) VALUES (@usuario_id, @passeador_id)";
+            string ignoreQuery = "INSERT IGNORE INTO passeadores_unlike (usuario_id, passeador_id) VALUES (@usuario_id, @passeador_id)";
 
             using MySqlCommand command = new MySqlCommand(ignoreQuery, _database.Connection);
 
@@ -228,7 +228,7 @@ namespace DogWalkr.Repositories
 
             await command.ExecuteNonQueryAsync();
 
-            string deleteQuery = "DELETE FROM passeadores_curtidos WHERE usuario_id = @usuario_id AND passeador_id = @passeador_id";
+            string deleteQuery = "DELETE FROM passeadores_like WHERE usuario_id = @usuario_id AND passeador_id = @passeador_id";
 
             command.CommandText = deleteQuery;
 

@@ -237,7 +237,7 @@ namespace DogWalkr.Repositories
 
         public async Task<string> Like(Guid passeadorId, Guid cachorroId, Guid usuarioId)
         {
-            string likeQuery = "INSERT IGNORE INTO cachorros_curtidos (passeador_id, cachorro_id, usuario_id) VALUES (@passeador_id, @cachorro_id, @usuario_id)";
+            string likeQuery = "INSERT IGNORE INTO cachorros_like (passeador_id, cachorro_id, usuario_id) VALUES (@passeador_id, @cachorro_id, @usuario_id)";
 
             using MySqlCommand command = new MySqlCommand(likeQuery, _database.Connection);
 
@@ -247,7 +247,7 @@ namespace DogWalkr.Repositories
 
             await command.ExecuteNonQueryAsync();
 
-            string matchQuery = "INSERT IGNORE INTO matches (usuario_id, passeador_id) SELECT usuario_id, passeador_id FROM passeadores_curtidos WHERE EXISTS (SELECT null FROM passeadores_curtidos WHERE usuario_id = @usuario_id AND passeador_id = @passeador_id)";
+            string matchQuery = "INSERT IGNORE INTO matches (usuario_id, passeador_id) SELECT usuario_id, passeador_id FROM passeadores_like WHERE EXISTS (SELECT null FROM passeadores_like WHERE usuario_id = @usuario_id AND passeador_id = @passeador_id)";
 
             using MySqlCommand sqlCommand = new MySqlCommand(matchQuery, _database.Connection);
 
@@ -270,7 +270,7 @@ namespace DogWalkr.Repositories
 
         public async Task Ignore(Guid passeadorId, Guid cachorroId, Guid usuarioId)
         {
-            string ignoreQuery = "INSERT IGNORE INTO cachorros_ignorados (passeador_id, cachorro_id, usuario_id) VALUES (@passeador_id, @cachorro_id, @usuario_id)";
+            string ignoreQuery = "INSERT IGNORE INTO cachorros_unlike (passeador_id, cachorro_id, usuario_id) VALUES (@passeador_id, @cachorro_id, @usuario_id)";
 
             using MySqlCommand command = new MySqlCommand(ignoreQuery, _database.Connection);
 
@@ -280,7 +280,7 @@ namespace DogWalkr.Repositories
 
             await command.ExecuteNonQueryAsync();
 
-            string deleteQuery = "DELETE FROM cachorros_curtidos WHERE passeador_id = @passeador_id AND cachorro_id = @cachorro_id";
+            string deleteQuery = "DELETE FROM cachorros_like WHERE passeador_id = @passeador_id AND cachorro_id = @cachorro_id";
 
             command.CommandText = deleteQuery;
 
@@ -406,7 +406,7 @@ namespace DogWalkr.Repositories
 
             await dataReader.CloseAsync();
 
-            string searchQuery = "SELECT * FROM passeadores WHERE NOT EXISTS (SELECT null FROM passeadores_curtidos WHERE passeadores.id = passeadores_curtidos.passeador_id AND usuario_id = @id) AND NOT EXISTS (SELECT null FROM passeadores_ignorados WHERE passeadores.id = passeadores_ignorados.passeador_id AND usuario_id = @id) AND NOT EXISTS (SELECT null FROM matches WHERE passeadores.id = matches.passeador_id AND usuario_id = @id)";
+            string searchQuery = "SELECT * FROM passeadores WHERE NOT EXISTS (SELECT null FROM passeadores_like WHERE passeadores.id = passeadores_like.passeador_id AND usuario_id = @id) AND NOT EXISTS (SELECT null FROM passeadores_unlike WHERE passeadores.id = passeadores_unlike.passeador_id AND usuario_id = @id) AND NOT EXISTS (SELECT null FROM matches WHERE passeadores.id = matches.passeador_id AND usuario_id = @id)";
 
             command.CommandText = searchQuery;
 
