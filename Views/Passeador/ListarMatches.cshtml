@@ -1,0 +1,120 @@
+﻿@model List<UsuarioListarMatchesViewModel>
+
+@{
+    ViewData["Title"] = "Meus matches";
+}
+
+<div class="pagina-container">
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <h2 class="pagina-header">Combine os detalhes do passeio com o dono</h2>
+
+        foreach (var usuario in Model)
+        {
+            <div class="usuario-dogs-container">
+                <h5 class="mb-4 text-center">Dados de contato</h5>
+
+                <h3 class="text-center">@usuario.Nome</h3>
+
+                <hr class="mx-5 mb-4" />
+
+                <div class="info-row">
+                    @if (!String.IsNullOrEmpty(usuario.Email))
+                    {
+                        <div>
+                            <span class="bold mr-2">E-mail:</span>
+                            <a href="mailto:@usuario.Email">@usuario.Email</a>
+                        </div>
+                    }
+
+                    @if (!String.IsNullOrEmpty(usuario.Telefone))
+                    {
+                        <div>
+                            <span class="bold mr-2">Telefone:</span>
+                            <a href="tel:@usuario.Telefone">@usuario.Telefone</a>
+                        </div>
+                    }
+                </div>
+
+                <div class="info-row">
+                    <div>
+                        <span class="bold mr-2">Distância:</span>
+                        <span>@usuario.Distancia</span>
+                    </div>
+                </div>
+
+                @foreach (var cachorro in usuario.Cachorros)
+                {
+                    <div class="col-md-12 perfil-dog-container">
+                        <div class="imagem-container">
+                            @if (!String.IsNullOrEmpty(cachorro.Foto))
+                            {
+                                <img src="~/images/@cachorro.Foto" class="perfil-imagem" />
+                            }
+                            else
+                            {
+                                <img src="~/images/dog_sem_foto.png" width="240" />
+                            }
+                        </div>
+
+                        <div class="perfil-info">
+                            <h2 class="text-center">@cachorro.Nome</h2>
+
+                            <hr class="mx-5 mb-4" />
+
+                            @if (!String.IsNullOrEmpty(cachorro.Descricao))
+                            {
+                                <div class="info-column">
+                                    <span class="bold">Sobre mim:</span>
+                                    <span>@cachorro.Descricao</span>
+                                </div>
+                            }
+
+                            <div class="info-row">
+                                @if (!String.IsNullOrEmpty(cachorro.Idade))
+                                {
+                                    <div>
+                                        <span class="bold mr-2">Idade:</span>
+                                        <span>@cachorro.Idade</span>
+                                    </div>
+                                }
+                                @if (!String.IsNullOrEmpty(cachorro.Sexo))
+                                {
+                                    <div>
+                                        <span class="bold mr-2">Sexo:</span>
+                                        <span>@cachorro.Sexo</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="info-row">
+                                @if (!String.IsNullOrEmpty(cachorro.Raca))
+                                {
+                                    <div>
+                                        <span class="bold mr-2">Raça:</span>
+                                        <span>@cachorro.Raca</span>
+                                    </div>
+                                }
+                                @if (!String.IsNullOrEmpty(cachorro.Porte))
+                                {
+                                    <div>
+                                        <span class="bold mr-2">Porte:</span>
+                                        <span>@cachorro.Porte</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="mt-5 text-center">
+            <h2 class="my-5">Você ainda não tem nenhum match.</h2>
+            <a class="btn btn-secondary" asp-area="" asp-controller="Cachorro" asp-action="Procurar">Encontre um cachorro</a>
+        </div>
+    }
+</div>

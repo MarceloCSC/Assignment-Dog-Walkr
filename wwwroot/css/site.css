@@ -1,0 +1,503 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 80px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+/* Tema principal
+-------------------------------------------------- */
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-image: linear-gradient(#bfe7ff, #f0f8fc);
+}
+
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 56px;
+    font-weight: 300;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1.2;
+}
+
+h3 {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.2;
+}
+
+a {
+    color: #2798db;
+}
+    a:hover {
+        color: #134c6e;
+        text-decoration: none;
+    }
+
+.bold {
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .footer-text {
+        font-size: 12px;
+    }
+}
+
+.pagina-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hello-msg {
+    text-align: center;
+    margin-bottom: 24px;
+}
+@media (max-width: 768px) {
+    .hello-msg {
+        font-size: 40px;
+    }
+}
+
+.pagina-header {
+    padding: 16px;
+    text-align: center;
+    width: 50%;
+}
+@media (max-width: 768px) {
+    .pagina-header {
+        width: 100%;
+        font-size: 26px;
+    }
+}
+
+
+/* Botões
+-------------------------------------------------- */
+.btn-primary {
+    color: #1c1c1c;
+    background-color: #6bd6c8;
+    border: 1px solid #6bd6c8;
+    white-space: nowrap;
+    padding: 15px 35px;
+    text-align: center;
+}
+    .btn-primary:hover {
+        background-color: #51a69c;
+        border: 1px solid #51a69c;
+    }
+    .btn-primary:active {
+        background-color: #51a69c !important;
+        border: 1px solid #51a69c !important;
+    }
+
+.btn-secondary {
+    color: #1c1c1c;
+    background-color: transparent;
+    border: 1px solid #1c1c1c;
+    white-space: nowrap;
+    padding: 15px 35px;
+    text-align: center;
+}
+    .btn-secondary:hover {
+        color: white;
+        background-color: #7d7d7d;
+        border: 1px solid #7d7d7d;
+    }
+    .btn-secondary:active {
+        color: white !important;
+        background-color: #7d7d7d !important;
+        border: 1px solid #7d7d7d !important;
+    }
+
+.btn-danger {
+    color: white;
+    background-color: #cf4630;
+    border: 1px solid #cf4630;
+    padding: 15px 35px;
+    text-align: center;
+}
+    .btn-danger:hover {
+        color: white;
+        background-color: #a33a29;
+        border: 1px solid #a33a29;
+    }
+    .btn-danger:active {
+        color: white !important;
+        background-color: #a33a29 !important;
+        border: 1px solid #a33a29 !important;
+    }
+
+.group-btn-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 80px;
+}
+@media (max-width: 768px) {
+    .group-btn-row {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        padding: 0 20px;
+    }
+}
+
+
+/* Barra de navegação
+-------------------------------------------------- */
+.link-navegacao {
+    font-weight: 500;
+    transition: ease-out 0.2s;
+}
+    .link-navegacao:hover {
+        font-weight: 600;
+    }
+@media (max-width: 768px) {
+    .link-navegacao {
+        font-size: 16px;
+        padding: 10px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .dropdown-hover {
+        position: absolute;
+        right: 0;
+        padding: 10px;
+        margin: 0 15px 0 0;
+        border-radius: 5px;
+        background-image: linear-gradient(#bfe7ff, #d1eeff);
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    }
+}
+
+/* Formulários de cadastro
+-------------------------------------------------- */
+.cadastro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-cadastro {
+    width: 700px;
+}
+@media (max-width: 768px) {
+    .form-cadastro {
+        width: 100%;
+        padding: 0 20px;
+    }
+}
+
+/* Busca
+-------------------------------------------------- */
+.perfil-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 0;
+}
+
+.ignorar-curtir-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 24px 0;
+    position: relative;
+}
+@media (max-width: 768px) {
+    .ignorar-curtir-container {
+        width: 100%;
+    }
+}
+
+.ignorar-container {
+    height: 100%;
+    width: 120px;
+    position: relative;
+}
+@media (max-width: 768px) {
+    .ignorar-container {
+        display: flex;
+        justify-content: center;
+        background-color: white;
+        width: 16%;
+        opacity: 50%;
+        position: absolute;
+        left: 0;
+    }
+}
+
+.curtir-container {
+    height: 100%;
+    width: 120px;
+    position: relative;
+}
+@media (max-width: 768px) {
+    .curtir-container {
+        display: flex;
+        justify-content: center;
+        background-color: white;
+        width: 16%;
+        opacity: 50%;
+        position: absolute;
+        right: 0;
+    }
+}
+
+.btn-ignorar {
+    height: 100%;
+    width: 60px;
+    position: absolute;
+    right: 0;
+    margin: 0 30px;
+    background-image: url("../images/x_outline.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: ease-in-out 0.3s;
+}
+@media (max-width: 768px) {
+    .btn-ignorar {
+        width: 40px;
+        background-image: url("../images/x_black.png");
+        right: auto;
+        margin: 0;
+    }
+}
+    .btn-ignorar:hover {
+        width: 80px;
+        background-image: url("../images/x_black.png");
+        transition: ease-in-out 0.3s;
+    }
+@media (max-width: 768px) {
+    .btn-ignorar:hover {
+        width: 60px;
+    }
+}
+    .btn-ignorar:active {
+        background-image: url("../images/x_red.png");
+        transition: ease-in-out 0.3s;
+    }
+
+.btn-curtir {
+    height: 100%;
+    width: 60px;
+    position: absolute;
+    margin: 0 30px;
+    background-image: url("../images/heart_outline.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: ease-in-out 0.3s;
+}
+@media (max-width: 768px) {
+    .btn-curtir {
+        width: 40px;
+        background-image: url("../images/heart_black.png");
+        margin: 0;
+    }
+}
+    .btn-curtir:hover {
+        width: 80px;
+        background-image: url("../images/heart_black.png");
+        transition: ease-in-out 0.3s;
+    }
+@media (max-width: 768px) {
+    .btn-curtir:hover {
+        width: 60px;
+    }
+}
+    .btn-curtir:active {
+        background-image: url("../images/heart_red.png");
+        transition: ease-in-out 0.3s;
+    }
+
+.perfil-imagem {
+    width: 480px;
+    border-radius: 5px;
+}
+@media (max-width: 768px) {
+    .perfil-imagem {
+        width: 100%;
+    }
+}
+
+.perfil-info {
+    background-color: #f5fafa;
+    width: 480px;
+    padding: 20px 40px 30px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+@media (max-width: 768px) {
+    .perfil-info {
+        width: 100%;
+        padding: 15px 20px;
+    }
+}
+
+.info-column {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+@media (max-width: 768px) {
+    .info-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Meus matches
+-------------------------------------------------- */
+.imagem-container {
+    margin: 24px 0;
+}
+@media (max-width: 768px) {
+    .imagem-container {
+        width: 100%;
+    }
+}
+
+
+/* Meus cachorros
+-------------------------------------------------- */
+.btn-secondary-sm {
+    color: #1c1c1c;
+    background-color: transparent;
+    border: 1px solid #1c1c1c;
+    width: 170px;
+    padding: 10px 35px;
+    text-align: center;
+}
+    .btn-secondary-sm:hover {
+        color: white;
+        background-color: #7d7d7d;
+        border: 1px solid #7d7d7d;
+    }
+    .btn-secondary-sm:active {
+        color: white !important;
+        background-color: #7d7d7d !important;
+        border: 1px solid #7d7d7d !important;
+    }
+
+.btn-danger-sm {
+    color: white;
+    background-color: #cf4630;
+    border: 1px solid #cf4630;
+    width: 170px;
+    padding: 10px 35px;
+    text-align: center;
+}
+    .btn-danger-sm:hover {
+        color: white;
+        background-color: #a33a29;
+        border: 1px solid #a33a29;
+    }
+    .btn-danger-sm:active {
+        color: white !important;
+        background-color: #a33a29 !important;
+        border: 1px solid #a33a29 !important;
+    }
+
+
+.dogs-group-btn-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 30px 0 10px;
+}
+@media (max-width: 768px) {
+    .dogs-group-btn-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+}
+
+
+/* Meus matches usuários
+-------------------------------------------------- */
+.usuario-dogs-container {
+    background-color: white;
+    width: 640px;
+    padding: 20px 40px 30px;
+    margin: 32px 0;
+    border-radius: 5px;
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+@media (max-width: 768px) {
+    .usuario-dogs-container {
+        width: 100%;
+        padding: 20px 20px 30px;
+    }
+}
+
+.perfil-dog-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+}

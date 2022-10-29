@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Página inicial";
+}
+
+<div class="pagina-container">
+    @if (TempData["sucesso"] != null)
+    {
+        <div class="alert alert-success">@TempData["sucesso"]</div>
+    }
+
+    <h1 class="hello-msg">Olá @Context.Session.GetString("username")</h1>
+
+    @if (Context.Session.GetString("role") == "PASSEADOR")
+    {
+        <h2 class="pagina-header">Seja um dos top <span class="bold">dog walkrs</span> na sua região.</h2>
+    }
+    else
+    {
+        <h2 class="pagina-header">Encontre o melhor <span class="bold">dog walkr</span> para os seus pets.</h2>
+    }
+    
+    <div class="mb-2">
+        <img src="~/images/dog-walker.png" alt="dog walker" class="img-fluid" width="540" />   
+    </div>
+
+    <div>
+        @if (Context.Session.GetString("userId") == null)
+        {
+            <div class="group-btn-row my-4">
+                <a class="btn btn-secondary" asp-controller="Usuario" asp-action="Entrar">Eu estou procurando passeador</a>
+                <a class="btn btn-primary" asp-controller="Passeador" asp-action="Entrar">Eu sou passeador</a>
+            </div>
+        }
+        else if (Context.Session.GetString("role") == "USUARIO")
+        {
+            <a class="btn btn-primary" asp-controller="Passeador" asp-action="Procurar">Eu estou procurando passeador</a>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-controller="Cachorro" asp-action="Procurar">Procuro cachorros para passear</a>
+        }
+    </div>
+</div>

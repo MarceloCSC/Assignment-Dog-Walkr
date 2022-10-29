@@ -1,0 +1,116 @@
+﻿@model List<CachorroProcurarViewModel>
+
+@{
+    ViewData["Title"] = "Procurar cão";
+}
+
+<div class="pagina-container">
+
+    @if (TempData["curtir"] != null)
+    {
+        <div class="alert alert-success">@TempData["curtir"]</div>
+    }
+
+    @if (TempData["ignorar"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ignorar"]</div>
+    }
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <h2 class="pagina-header">Encontre um cachorro próximo à sua rota de passeio</h2>
+
+        foreach (var cachorro in Model)
+        {
+            <div class="col-md-6 perfil-container">
+
+                <div class="ignorar-curtir-container">
+                    @using (Html.BeginForm("Ignorar", "Passeador", new { cachorroId = cachorro.Id, usuarioId = cachorro.UsuarioId }, FormMethod.Post))
+                    {
+                        <div class="ignorar-container">
+                            <input type="submit" class="btn btn-ignorar" value="" />
+                        </div>                    
+                    }
+                    
+                    @if (!String.IsNullOrEmpty(cachorro.Foto))
+                    {
+                        <img src="~/images/@cachorro.Foto" class="perfil-imagem" />
+                    }
+                    else
+                    {
+                        <img src="~/images/dog_sem_foto.png" width="240" />
+                    }
+
+                    @using (Html.BeginForm("Curtir", "Passeador", new { cachorroId = cachorro.Id, usuarioId = cachorro.UsuarioId }, FormMethod.Post))
+                    {
+                        <div class="curtir-container">
+                            <input type="submit" class="btn btn-curtir" value="" />
+                        </div>                    
+                    }
+                </div>
+
+                <div class="perfil-info">
+
+                    <h2 class="text-center">@cachorro.Nome</h2>
+
+                    <hr class="mx-5 mb-4" />
+
+                    @if (!String.IsNullOrEmpty(cachorro.Descricao))
+                    {
+                        <div class="info-column">
+                            <span class="bold">Sobre mim:</span>
+                            <span>@cachorro.Descricao</span>
+                        </div>
+                    }
+
+                    <div class="info-row">
+                        <div>
+                            <span class="bold mr-2">Distância:</span>
+                            <span>@cachorro.Distancia</span>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        @if (!String.IsNullOrEmpty(cachorro.Idade))
+                        {
+                            <div>
+                                <span class="bold mr-2">Idade:</span>
+                                <span>@cachorro.Idade</span>
+                            </div>
+                        }
+                        @if (!String.IsNullOrEmpty(cachorro.Sexo))
+                        {
+                            <div>
+                                <span class="bold mr-2">Sexo:</span>
+                                <span>@cachorro.Sexo</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="info-row">
+                        @if (!String.IsNullOrEmpty(cachorro.Raca))
+                        {
+                            <div>
+                                <span class="bold mr-2">Raça:</span>
+                                <span>@cachorro.Raca</span>
+                            </div>
+                        }
+                        @if (!String.IsNullOrEmpty(cachorro.Porte))
+                        {
+                            <div>
+                                <span class="bold mr-2">Porte:</span>
+                                <span>@cachorro.Porte</span>
+                            </div>
+                        }
+                    </div>         
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="mt-5">
+            <h2 class="text-center my-5">Não encontramos nenhum resultado perto de você.</h2>
+        </div>
+    }
+</div>

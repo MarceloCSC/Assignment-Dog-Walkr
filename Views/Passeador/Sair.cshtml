@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewData["Title"] = "Sair da sessão";
+}
+
+<div class="d-flex flex-column align-items-center my-5">
+    <h2 class="pb-5">Deseja mesmo sair?</h2>
+
+    <form method="post" asp-action="Logout">
+
+        <div class="group-btn-row my-4">
+            <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Continuar conectado</a>
+            <input type="submit" class="btn btn-danger" value="Sair da sessão" />
+        </div>
+
+    </form>
+
+</div>

@@ -1,0 +1,97 @@
+﻿@model List<PasseadorProcurarViewModel>
+
+@{
+    ViewData["Title"] = "Procurar passeador";
+}
+
+<div class="pagina-container">
+
+    @if (TempData["curtir"] != null)
+    {
+        <div class="alert alert-success">@TempData["curtir"]</div>
+    }
+
+    @if (TempData["ignorar"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ignorar"]</div>
+    }
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <h2 class="pagina-header">Encontre um <span class="bold">dog walkr</span> próximo de você!</h2>
+
+        foreach (var passeador in Model)
+        {
+            <div class="col-md-6 perfil-container">
+
+                <div class="ignorar-curtir-container">
+                    @using (Html.BeginForm("Ignorar", "Usuario", new { id = passeador.Id }, FormMethod.Post))
+                    {
+                        <div class="ignorar-container">
+                            <input type="submit" class="btn btn-ignorar" value="" />
+                        </div>
+                    }
+
+                    @if (!String.IsNullOrEmpty(passeador.Foto))
+                    {
+                        <img src="~/images/@passeador.Foto" class="perfil-imagem" />
+                    }
+                    else
+                    {
+                        <img src="~/images/sem_foto.png" width="360" />
+                    }
+
+                    @using (Html.BeginForm("Curtir", "Usuario", new { id = passeador.Id }, FormMethod.Post))
+                    {
+                        <div class="curtir-container">
+                            <input type="submit" class="btn btn-curtir" value="" />
+                        </div>
+                    }
+                </div>
+
+                <div class="perfil-info">
+
+                    <h2 class="text-center">@passeador.Nome</h2>
+
+                    <hr class="mx-5 mb-4" />
+
+                    @if (!String.IsNullOrEmpty(passeador.Descricao))
+                    {
+                        <div class="info-column">
+                            <span class="bold">Sobre mim:</span>
+                            <span>@passeador.Descricao</span>
+                        </div>
+                    }
+
+                    <div class="info-row">
+                        <div>
+                            <span class="bold mr-2">Distância:</span>
+                            <span>@passeador.Distancia</span>
+                        </div>
+                        @if (!String.IsNullOrEmpty(passeador.Horario))
+                        {
+                            <div>
+                                <span class="bold mr-2">Horário de passeio:</span>
+                                <span>@passeador.Horario</span>
+                            </div>
+                        }
+                    </div>
+
+                    @if (!String.IsNullOrEmpty(passeador.Qualificacoes))
+                    {
+                        <div class="info-column">
+                            <span class="bold">Qualificações:</span>
+                            <span>@passeador.Qualificacoes</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="mt-5">
+            <h2 class="text-center my-5">Não encontramos nenhum resultado perto de você.</h2>
+        </div>
+    }
+</div>

@@ -1,0 +1,108 @@
+﻿@model List<Cachorro>
+
+@{
+    ViewData["Title"] = "Meus cães";
+}
+
+<div class="pagina-container">
+
+    @if (TempData["sucesso"] != null)
+    {
+        <div class="alert alert-success">@TempData["sucesso"]</div>
+    }
+
+    @if (Model != null && Model.Count > 0)
+    {
+        if (Model.Count == 1)
+        {
+            <h2 class="pagina-header">Meu cão</h2>
+        }
+        else
+        {
+            <h2 class="pagina-header">Meus cães</h2>
+        }
+
+        foreach (var cachorro in Model)
+        {
+            <div class="col-md-6 perfil-container">
+                
+                <div class="imagem-container">
+                    @if (!String.IsNullOrEmpty(cachorro.Foto))
+                    {
+                        <img src="~/images/@cachorro.Foto" class="perfil-imagem" />
+                    }
+                    else
+                    {
+                        <img src="~/images/dog_sem_foto.png" width="240" />
+                    }
+                </div>
+
+                <div class="perfil-info">
+                    <h2 class="text-center">@cachorro.Nome</h2>
+
+                    <hr class="mx-5 mb-4" />
+
+                    @if (!String.IsNullOrEmpty(cachorro.Descricao))
+                    {
+                        <div class="info-column">
+                            <span class="bold">Sobre mim:</span>
+                            <span>@cachorro.Descricao</span>
+                        </div>
+                    }
+
+                    <div class="info-row">
+                        @if (!String.IsNullOrEmpty(cachorro.Idade))
+                        {
+                            <div>
+                                <span class="bold mr-2">Idade:</span>
+                                <span>@cachorro.Idade</span>
+                            </div>
+                        }
+                        @if (!String.IsNullOrEmpty(cachorro.Sexo))
+                        {
+                            <div>
+                                <span class="bold mr-2">Sexo:</span>
+                                <span>@cachorro.Sexo</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="info-row">
+                        @if (!String.IsNullOrEmpty(cachorro.Raca))
+                        {
+                            <div>
+                                <span class="bold mr-2">Raça:</span>
+                                <span>@cachorro.Raca</span>
+                            </div>
+                        }
+                        @if (!String.IsNullOrEmpty(cachorro.Porte))
+                        {
+                            <div>
+                                <span class="bold mr-2">Porte:</span>
+                                <span>@cachorro.Porte</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="dogs-group-btn-row">
+                        @using(Html.BeginForm("Editar", "Cachorro", new { Id = cachorro.Id }, FormMethod.Get))
+                        {
+                            <input type="submit" class="btn btn-secondary-sm" value="Editar" />
+                        }
+                        @using(Html.BeginForm("Apagar", "Cachorro", new { Id = cachorro.Id }, FormMethod.Post))
+                        {
+                            <input type="submit" class="btn btn-danger-sm" value="Excluir" />
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="mt-5 text-center">
+            <h2 class="my-5">Você ainda não cadastrou nenhum cãozinho!</h2>
+            <a class="btn btn-secondary" asp-controller="Cachorro" asp-action="Cadastrar">Cadastre seu cachorro</a>
+        </div>
+    }
+</div>

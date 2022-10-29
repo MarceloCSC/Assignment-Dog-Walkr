@@ -1,0 +1,89 @@
+﻿@model List<PasseadorListarMatchesViewModel>
+
+@{
+    ViewData["Title"] = "Meus matches";
+}
+
+<div class="pagina-container">
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <h2 class="pagina-header">Comece a falar com seu <span class="bold">dog walkr</span> agora</h2>
+
+        foreach (var passeador in Model)
+        {
+            <div class="col-md-6 perfil-container">
+
+                <div class="imagem-container">
+                    @if (!String.IsNullOrEmpty(passeador.Foto))
+                    {
+                        <img src="~/images/@passeador.Foto" class="perfil-imagem" />                   
+                    }
+                    else
+                    {
+                        <img src="~/images/sem_foto.png" width="360" />
+                    }
+                </div>
+
+                <div class="perfil-info">
+                    <h2 class="text-center">@passeador.Nome</h2>
+
+                    <hr class="mx-5 mb-4" />
+
+                    @if (!String.IsNullOrEmpty(passeador.Descricao))
+                    {
+                        <div class="info-column">
+                            <span class="bold">Sobre mim:</span>
+                            <span>@passeador.Descricao</span>
+                        </div>
+                    }
+
+                    @if (!String.IsNullOrEmpty(passeador.Email))
+                    {
+                        <div class="info-column">
+                            <span class="bold mr-2">E-mail:</span>
+                            <a href="mailto:@passeador.Email">@passeador.Email</a>
+                        </div>
+                    }
+
+                    @if (!String.IsNullOrEmpty(passeador.Telefone))
+                    {
+                        <div class="info-column">
+                            <span class="bold mr-2">Telefone:</span>
+                            <a href="tel:@passeador.Telefone">@passeador.Telefone</a>
+                        </div>
+                    }
+
+                    <div class="info-row">
+                        <div>
+                            <span class="bold mr-2">Distância:</span>
+                            <span>@passeador.Distancia</span>
+                        </div>
+                        @if (!String.IsNullOrEmpty(passeador.Horario))
+                        {
+                            <div>
+                                <span class="bold mr-2">Horário de passeio:</span>
+                                <span>@passeador.Horario</span>
+                            </div>
+                        }
+                    </div>
+
+                    @if (!String.IsNullOrEmpty(passeador.Qualificacoes))
+                    {
+                        <div class="info-column">
+                            <span class="bold">Qualificações:</span>
+                            <span>@passeador.Qualificacoes</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="mt-5 text-center">
+            <h2 class="my-5">Você ainda não tem nenhum match.</h2>
+            <a class="btn btn-secondary" asp-area="" asp-controller="Passeador" asp-action="Procurar">Encontre um passeador</a>
+        </div>
+    }
+</div>
