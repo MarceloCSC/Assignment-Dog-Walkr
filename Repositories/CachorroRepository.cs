@@ -10,11 +10,9 @@ namespace DogWalkr.Repositories
 {
     public class CachorroRepository
     {
-        private const string DadosConexao = "Database=dog_walkr; Data Source=localhost; User Id=root;";
-
         public void Create(CachorroCadastrarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection(DadosConexao);
+            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
 
             connection.Open();
 
@@ -77,7 +75,7 @@ namespace DogWalkr.Repositories
 
         public Cachorro Get(Guid id)
         {
-            using MySqlConnection connection = new MySqlConnection(DadosConexao);
+            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
 
             connection.Open();
 
@@ -122,7 +120,7 @@ namespace DogWalkr.Repositories
 
         public List<Cachorro> GetAll(Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection(DadosConexao);
+            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
 
             connection.Open();
 
@@ -172,7 +170,7 @@ namespace DogWalkr.Repositories
 
         public void Update(CachorroEditarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection(DadosConexao);
+            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
 
             connection.Open();
 
@@ -210,7 +208,7 @@ namespace DogWalkr.Repositories
 
         public void Delete(Guid cachorroId, Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection(DadosConexao);
+            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
 
             connection.Open();
 
@@ -238,13 +236,13 @@ namespace DogWalkr.Repositories
 
                 command.ExecuteNonQuery();
             }
-    
+
             connection.Close();
         }
 
         public List<CachorroProcurarViewModel> Search(Guid passeadorId)
         {
-            using MySqlConnection connection = new MySqlConnection(DadosConexao);
+            using MySqlConnection connection = new MySqlConnection(DbHelper.DadosConexao);
 
             connection.Open();
 
