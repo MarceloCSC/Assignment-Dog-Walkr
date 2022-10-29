@@ -23,7 +23,7 @@ namespace DogWalkr.Models
         public string Email { get; set; }
 
         [DataType(DataType.PhoneNumber)]
-        [RegularExpression(@"(\(?\d{2}\)?\s)?(\d{4,5}\-?\d{4})", ErrorMessage = "Por favor, insira um telefone válido.")]
+        [RegularExpression(@"(\(?\d{2}\)?\s)?(\d{4,5}\-?\d{4})", ErrorMessage = "Por favor, insira um telefone no formato (XX) XXXXX-XXXX.")]
         public string Telefone { get; set; }
 
         [ValidBirthday]

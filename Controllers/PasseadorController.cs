@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DogWalkr.Database;
 using DogWalkr.Repositories;
 using DogWalkr.ViewModels.Passeador;
 using DogWalkr.ViewModels.Shared;
@@ -12,10 +13,12 @@ namespace DogWalkr.Controllers
     public class PasseadorController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly DogWalkrDb _database;
 
-        public PasseadorController(IWebHostEnvironment webHostEnvironment)
+        public PasseadorController(IWebHostEnvironment webHostEnvironment, DogWalkrDb database)
         {
             _webHostEnvironment = webHostEnvironment;
+            _database = database;
         }
 
         public IActionResult Login()
@@ -36,7 +39,9 @@ namespace DogWalkr.Controllers
                 viewModel.Id = Guid.NewGuid();
                 viewModel.WebRootPath = _webHostEnvironment.WebRootPath;
 
-                var repository = new PasseadorRepository();
+                await _database.Connection.OpenAsync();
+
+                var repository = new PasseadorRepository(_database);
 
                 await repository.Create(viewModel);
 
@@ -51,7 +56,7 @@ namespace DogWalkr.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Editar()
+        public async Task<IActionResult> Editar()
         {
             string passeadorId = HttpContext.Session.GetString("userId");
 
@@ -60,9 +65,11 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new PasseadorRepository();
+            await _database.Connection.OpenAsync();
 
-            var passeador = repository.Get(Guid.Parse(passeadorId));
+            var repository = new PasseadorRepository(_database);
+
+            var passeador = await repository.Get(Guid.Parse(passeadorId));
 
             var viewModel = new PasseadorEditarViewModel
             {
@@ -99,7 +106,9 @@ namespace DogWalkr.Controllers
             {
                 viewModel.WebRootPath = _webHostEnvironment.WebRootPath;
 
-                var repository = new PasseadorRepository();
+                await _database.Connection.OpenAsync();
+
+                var repository = new PasseadorRepository(_database);
 
                 await repository.Update(viewModel);
 
@@ -117,13 +126,15 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Entrar(LoginViewModel viewModel)
+        public async Task<IActionResult> Entrar(LoginViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var repository = new PasseadorRepository();
+                await _database.Connection.OpenAsync();
 
-                var passeador = repository.Get(viewModel.Login, viewModel.Senha);
+                var repository = new PasseadorRepository(_database);
+
+                var passeador = await repository.Get(viewModel.Login, viewModel.Senha);
 
                 if (passeador == null)
                 {
@@ -158,7 +169,7 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Curtir(Guid cachorroId, Guid usuarioId)
+        public async Task<IActionResult> Curtir(Guid cachorroId, Guid usuarioId)
         {
             string passeadorId = HttpContext.Session.GetString("userId");
 
@@ -167,9 +178,11 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Passeador");
             }
 
-            var repository = new PasseadorRepository();
+            await _database.Connection.OpenAsync();
 
-            string response = repository.Like(Guid.Parse(passeadorId), cachorroId, usuarioId);
+            var repository = new PasseadorRepository(_database);
+
+            string response = await repository.Like(Guid.Parse(passeadorId), cachorroId, usuarioId);
 
             if (response == "MATCH")
             {
@@ -184,7 +197,7 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Ignorar(Guid cachorroId, Guid usuarioId)
+        public async Task<IActionResult> Ignorar(Guid cachorroId, Guid usuarioId)
         {
             string passeadorId = HttpContext.Session.GetString("userId");
 
@@ -193,15 +206,17 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Passeador");
             }
 
-            var repository = new PasseadorRepository();
+            await _database.Connection.OpenAsync();
 
-            repository.Ignore(Guid.Parse(passeadorId), cachorroId, usuarioId);
+            var repository = new PasseadorRepository(_database);
+
+            await repository.Ignore(Guid.Parse(passeadorId), cachorroId, usuarioId);
 
             TempData["ignorar"] = "Esse cachorro não aparecerá novamente.";
             return RedirectToAction("Procurar", "Cachorro");
         }
 
-        public IActionResult Procurar()
+        public async Task<IActionResult> Procurar()
         {
             string usuarioId = HttpContext.Session.GetString("userId");
 
@@ -210,14 +225,16 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new PasseadorRepository();
+            await _database.Connection.OpenAsync();
 
-            var passeadores = repository.Search(Guid.Parse(usuarioId));
+            var repository = new PasseadorRepository(_database);
+
+            var passeadores = await repository.Search(Guid.Parse(usuarioId));
 
             return View(passeadores);
         }
 
-        public IActionResult ListarMatches()
+        public async Task<IActionResult> ListarMatches()
         {
             string passeadorId = HttpContext.Session.GetString("userId");
 
@@ -226,9 +243,11 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Passeador");
             }
 
-            var repository = new PasseadorRepository();
+            await _database.Connection.OpenAsync();
 
-            var usuarios = repository.GetMatches(Guid.Parse(passeadorId));
+            var repository = new PasseadorRepository(_database);
+
+            var usuarios = await repository.GetMatches(Guid.Parse(passeadorId));
 
             return View(usuarios);
         }

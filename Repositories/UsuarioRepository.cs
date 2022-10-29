@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DogWalkr.Database;
 using DogWalkr.Models;
 using DogWalkr.Utils;
 using DogWalkr.ViewModels.Passeador;
@@ -14,15 +15,18 @@ namespace DogWalkr.Repositories
 {
     public class UsuarioRepository
     {
+        private readonly DogWalkrDb _database;
+
+        public UsuarioRepository(DogWalkrDb database)
+        {
+            _database = database;
+        }
+
         public async Task Create(UsuarioEditarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "INSERT INTO usuarios (id, nome, login, senha, email, telefone, nascimento, endereco, cep, cidade, estado, latitude, longitude) VALUES (@id, @nome, @login, @senha, @email, @telefone, @nascimento, @endereco, @cep, @cidade, @estado, @latitude, @longitude)";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", viewModel.Id);
             command.Parameters.AddWithValue("@nome", viewModel.Nome);
@@ -45,30 +49,26 @@ namespace DogWalkr.Repositories
             command.Parameters.AddWithValue("@latitude", enderecos.First().Coordinates.Latitude);
             command.Parameters.AddWithValue("@longitude", enderecos.First().Coordinates.Longitude);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
-            connection.Close();
+            await _database.Connection.CloseAsync();
         }
 
-        public Usuario Get(Guid usuarioId)
+        public async Task<Usuario> Get(Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "SELECT * FROM usuarios WHERE id = @id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", usuarioId);
 
-            using MySqlDataReader dataReader = command.ExecuteReader();
+            using MySqlDataReader dataReader = await command.ExecuteReaderAsync();
 
             if (dataReader.HasRows)
             {
                 var usuario = new Usuario();
 
-                while (dataReader.Read())
+                while (await dataReader.ReadAsync())
                 {
                     usuario.Id = dataReader.GetGuid("id");
                     usuario.Nome = dataReader.GetString("nome");
@@ -85,38 +85,34 @@ namespace DogWalkr.Repositories
                     usuario.Longitude = dataReader.GetDouble("longitude");
                 }
 
-                dataReader.Close();
-                connection.Close();
+                await dataReader.CloseAsync();
+                await _database.Connection.CloseAsync();
 
                 return usuario;
             }
 
-            dataReader.Close();
-            connection.Close();
+            await dataReader.CloseAsync();
+            await _database.Connection.CloseAsync();
 
             return null;
         }
 
-        public Usuario Get(string login, string senha)
+        public async Task<Usuario> Get(string login, string senha)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "SELECT * FROM usuarios WHERE login = @login AND senha = @senha";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@login", login);
             command.Parameters.AddWithValue("@senha", senha);
 
-            using MySqlDataReader dataReader = command.ExecuteReader();
+            using MySqlDataReader dataReader = await command.ExecuteReaderAsync();
 
             if (dataReader.HasRows)
             {
                 var usuario = new Usuario();
 
-                while (dataReader.Read())
+                while (await dataReader.ReadAsync())
                 {
                     usuario.Id = dataReader.GetGuid("id");
                     usuario.Nome = dataReader.GetString("nome");
@@ -133,27 +129,23 @@ namespace DogWalkr.Repositories
                     usuario.Longitude = dataReader.GetDouble("longitude");
                 }
 
-                dataReader.Close();
-                connection.Close();
+                await dataReader.CloseAsync();
+                await _database.Connection.CloseAsync();
 
                 return usuario;
             }
 
-            dataReader.Close();
-            connection.Close();
+            await dataReader.CloseAsync();
+            await _database.Connection.CloseAsync();
 
             return null;
         }
 
         public async Task Update(UsuarioEditarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "UPDATE usuarios SET nome = @nome, senha = @senha, email = @email, telefone = @telefone, nascimento = @nascimento, endereco = @endereco, cep = @cep, cidade = @cidade, estado = @estado, latitude = @latitude, longitude = @longitude WHERE id = @id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", viewModel.Id);
             command.Parameters.AddWithValue("@nome", viewModel.Nome);
@@ -175,46 +167,38 @@ namespace DogWalkr.Repositories
             command.Parameters.AddWithValue("@latitude", enderecos.First().Coordinates.Latitude);
             command.Parameters.AddWithValue("@longitude", enderecos.First().Coordinates.Longitude);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
-            connection.Close();
+            await _database.Connection.CloseAsync();
         }
 
-        public void Delete(Guid usuarioId)
+        public async Task Delete(Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "DELETE FROM usuarios WHERE id = @id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", usuarioId);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
-            connection.Close();
+            await _database.Connection.CloseAsync();
         }
 
-        public string Like(Guid usuarioId, Guid passeadorId)
+        public async Task<string> Like(Guid usuarioId, Guid passeadorId)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string likeQuery = "INSERT IGNORE INTO passeadores_curtidos (usuario_id, passeador_id) VALUES (@usuario_id, @passeador_id)";
 
-            using MySqlCommand command = new MySqlCommand(likeQuery, connection);
+            using MySqlCommand command = new MySqlCommand(likeQuery, _database.Connection);
 
             command.Parameters.AddWithValue("@usuario_id", usuarioId);
             command.Parameters.AddWithValue("@passeador_id", passeadorId);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             string matchQuery = "INSERT IGNORE INTO matches (usuario_id, passeador_id) SELECT usuario_id, passeador_id FROM cachorros_curtidos WHERE EXISTS (SELECT null FROM cachorros_curtidos WHERE usuario_id = @usuario_id AND passeador_id = @passeador_id)";
 
-            using MySqlCommand sqlCommand = new MySqlCommand(matchQuery, connection);
+            using MySqlCommand sqlCommand = new MySqlCommand(matchQuery, _database.Connection);
 
             sqlCommand.Parameters.AddWithValue("@usuario_id", usuarioId);
             sqlCommand.Parameters.AddWithValue("@passeador_id", passeadorId);
@@ -223,78 +207,70 @@ namespace DogWalkr.Repositories
 
             if (sqlCommand.LastInsertedId > 0)
             {
-                connection.Close();
+                await _database.Connection.CloseAsync();
 
                 return "MATCH";
             }
 
-            connection.Close();
+            await _database.Connection.CloseAsync();
 
             return "LIKE";
         }
 
-        public void Ignore(Guid usuarioId, Guid passeadorId)
+        public async Task Ignore(Guid usuarioId, Guid passeadorId)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string ignoreQuery = "INSERT IGNORE INTO passeadores_ignorados (usuario_id, passeador_id) VALUES (@usuario_id, @passeador_id)";
 
-            using MySqlCommand command = new MySqlCommand(ignoreQuery, connection);
+            using MySqlCommand command = new MySqlCommand(ignoreQuery, _database.Connection);
 
             command.Parameters.AddWithValue("@usuario_id", usuarioId);
             command.Parameters.AddWithValue("@passeador_id", passeadorId);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             string deleteQuery = "DELETE FROM passeadores_curtidos WHERE usuario_id = @usuario_id AND passeador_id = @passeador_id";
 
             command.CommandText = deleteQuery;
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
-            connection.Close();
+            await _database.Connection.CloseAsync();
         }
 
-        public List<PasseadorListarMatchesViewModel> GetMatches(Guid usuarioId)
+        public async Task<List<PasseadorListarMatchesViewModel>> GetMatches(Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             double latitude = 0, longitude = 0;
 
             string query = "SELECT latitude, longitude FROM usuarios WHERE id = @id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", usuarioId);
 
-            using MySqlDataReader dataReader = command.ExecuteReader();
+            using MySqlDataReader dataReader = await command.ExecuteReaderAsync();
 
             if (dataReader.HasRows)
             {
-                while (dataReader.Read())
+                while (await dataReader.ReadAsync())
                 {
                     latitude = dataReader.GetDouble("latitude");
                     longitude = dataReader.GetDouble("longitude");
                 }
             }
 
-            dataReader.Close();
+            await dataReader.CloseAsync();
 
             string passeadoresQuery = "SELECT * FROM passeadores LEFT JOIN matches ON passeadores.id = matches.passeador_id WHERE usuario_id = @id";
 
             command.CommandText = passeadoresQuery;
 
-            using MySqlDataReader reader = command.ExecuteReader();
+            using MySqlDataReader reader = await command.ExecuteReaderAsync();
 
             if (reader.HasRows)
             {
                 var passeadores = new List<PasseadorListarMatchesViewModel>();
 
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     var passeador = new PasseadorListarMatchesViewModel
                     {
@@ -314,14 +290,14 @@ namespace DogWalkr.Repositories
                     passeadores.Add(passeador);
                 }
 
-                reader.Close();
-                connection.Close();
+                await reader.CloseAsync();
+                await _database.Connection.CloseAsync();
 
                 return passeadores;
             }
 
-            reader.Close();
-            connection.Close();
+            await reader.CloseAsync();
+            await _database.Connection.CloseAsync();
 
             return null;
         }

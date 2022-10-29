@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using DogWalkr.Database;
 using DogWalkr.Models;
 using DogWalkr.Utils;
 using DogWalkr.ViewModels.Cachorro;
@@ -10,32 +12,35 @@ namespace DogWalkr.Repositories
 {
     public class CachorroRepository
     {
-        public void Create(CachorroCadastrarViewModel viewModel)
+        private readonly DogWalkrDb _database;
+
+        internal CachorroRepository(DogWalkrDb database)
         {
-            using MySqlConnection connection = new MySqlConnection();
+            _database = database;
+        }
 
-            connection.Open();
-
+        public async Task Create(CachorroCadastrarViewModel viewModel)
+        {
             double latitude = 0, longitude = 0;
 
             string query = "SELECT latitude, longitude FROM usuarios WHERE id = @usuario_id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@usuario_id", viewModel.UsuarioId);
 
-            using MySqlDataReader dataReader = command.ExecuteReader();
+            using MySqlDataReader dataReader = await command.ExecuteReaderAsync();
 
             if (dataReader.HasRows)
             {
-                while (dataReader.Read())
+                while (await dataReader.ReadAsync())
                 {
                     latitude = dataReader.GetDouble("latitude");
                     longitude = dataReader.GetDouble("longitude");
                 }
             }
 
-            dataReader.Close();
+            await dataReader.CloseAsync();
 
             string insertQuery = "INSERT INTO cachorros (id, usuario_id, nome, raca, porte, idade, sexo, descricao, foto, latitude, longitude) VALUES (@id, @usuario_id, @nome, @raca, @porte, @idade, @sexo, @descricao, @foto, @latitude, @longitude)";
 
@@ -68,30 +73,26 @@ namespace DogWalkr.Repositories
 
             command.Parameters.AddWithValue("@foto", fileName);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
-            connection.Close();
+            await _database.Connection.CloseAsync();
         }
 
-        public Cachorro Get(Guid id)
+        public async Task<Cachorro> Get(Guid id)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "SELECT * FROM cachorros WHERE id = @id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", id);
 
-            using MySqlDataReader dataReader = command.ExecuteReader();
+            using MySqlDataReader dataReader = await command.ExecuteReaderAsync();
 
             if (dataReader.HasRows)
             {
                 var cachorro = new Cachorro();
 
-                while (dataReader.Read())
+                while (await dataReader.ReadAsync())
                 {
                     cachorro.Id = dataReader.GetGuid("id");
                     cachorro.UsuarioId = dataReader.GetGuid("usuario_id");
@@ -106,37 +107,33 @@ namespace DogWalkr.Repositories
                     cachorro.Longitude = dataReader.GetDouble("longitude");
                 }
 
-                dataReader.Close();
-                connection.Close();
+                await dataReader.CloseAsync();
+                await _database.Connection.CloseAsync();
 
                 return cachorro;
             }
 
-            dataReader.Close();
-            connection.Close();
+            await dataReader.CloseAsync();
+            await _database.Connection.CloseAsync();
 
             return null;
         }
 
-        public List<Cachorro> GetAll(Guid usuarioId)
+        public async Task<List<Cachorro>> GetAll(Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "SELECT * FROM cachorros WHERE usuario_id = @usuario_id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@usuario_id", usuarioId);
 
-            using MySqlDataReader dataReader = command.ExecuteReader();
+            using MySqlDataReader dataReader = await command.ExecuteReaderAsync();
 
             if (dataReader.HasRows)
             {
                 var cachorros = new List<Cachorro>();
 
-                while (dataReader.Read())
+                while (await dataReader.ReadAsync())
                 {
                     var cachorro = new Cachorro
                     {
@@ -156,27 +153,23 @@ namespace DogWalkr.Repositories
                     cachorros.Add(cachorro);
                 }
 
-                dataReader.Close();
-                connection.Close();
+                await dataReader.CloseAsync();
+                await _database.Connection.CloseAsync();
 
                 return cachorros;
             }
 
-            dataReader.Close();
-            connection.Close();
+            await dataReader.CloseAsync();
+            await _database.Connection.CloseAsync();
 
             return null;
         }
 
-        public void Update(CachorroEditarViewModel viewModel)
+        public async Task Update(CachorroEditarViewModel viewModel)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "UPDATE cachorros SET nome = @nome, raca = @raca, porte = @porte, idade = @idade, sexo = @sexo, descricao = @descricao, foto = @foto WHERE id = @id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", viewModel.Id);
             command.Parameters.AddWithValue("@nome", viewModel.Nome);
@@ -201,24 +194,20 @@ namespace DogWalkr.Repositories
 
             command.Parameters.AddWithValue("@foto", fileName);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
-            connection.Close();
+            await _database.Connection.CloseAsync();
         }
 
-        public void Delete(Guid cachorroId, Guid usuarioId)
+        public async Task Delete(Guid cachorroId, Guid usuarioId)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             string query = "DELETE FROM cachorros_curtidos WHERE cachorro_id = @id; DELETE FROM cachorros_ignorados WHERE cachorro_id = @id; DELETE FROM cachorros WHERE id = @id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", cachorroId);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             string countQuery = "SELECT COUNT(*) FROM cachorros WHERE usuario_id = @usuario_id";
 
@@ -226,7 +215,7 @@ namespace DogWalkr.Repositories
 
             command.Parameters.AddWithValue("@usuario_id", usuarioId);
 
-            int rowsAmount = Convert.ToInt32(command.ExecuteScalar());
+            int rowsAmount = Convert.ToInt32(await command.ExecuteScalarAsync());
 
             if (rowsAmount == 0)
             {
@@ -234,31 +223,27 @@ namespace DogWalkr.Repositories
 
                 command.CommandText = matchesQuery;
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
 
-            connection.Close();
+            await _database.Connection.CloseAsync();
         }
 
-        public List<CachorroProcurarViewModel> Search(Guid passeadorId)
+        public async Task<List<CachorroProcurarViewModel>> Search(Guid passeadorId)
         {
-            using MySqlConnection connection = new MySqlConnection();
-
-            connection.Open();
-
             double latitude = 0, longitude = 0, distanciaMaxima = 0;
 
             string query = "SELECT latitude, longitude, distancia_maxima FROM passeadores WHERE id = @id";
 
-            using MySqlCommand command = new MySqlCommand(query, connection);
+            using MySqlCommand command = new MySqlCommand(query, _database.Connection);
 
             command.Parameters.AddWithValue("@id", passeadorId);
 
-            using MySqlDataReader dataReader = command.ExecuteReader();
+            using MySqlDataReader dataReader = await command.ExecuteReaderAsync();
 
             if (dataReader.HasRows)
             {
-                while (dataReader.Read())
+                while (await dataReader.ReadAsync())
                 {
                     latitude = dataReader.GetDouble("latitude");
                     longitude = dataReader.GetDouble("longitude");
@@ -266,19 +251,19 @@ namespace DogWalkr.Repositories
                 }
             }
 
-            dataReader.Close();
+            await dataReader.CloseAsync();
 
             string searchQuery = "SELECT * FROM cachorros WHERE NOT EXISTS (SELECT null FROM cachorros_curtidos WHERE cachorros.id = cachorros_curtidos.cachorro_id AND passeador_id = @id) AND NOT EXISTS (SELECT null FROM cachorros_ignorados WHERE cachorros.id = cachorros_ignorados.cachorro_id AND passeador_id = @id)";
 
             command.CommandText = searchQuery;
 
-            using MySqlDataReader reader = command.ExecuteReader();
+            using MySqlDataReader reader = await command.ExecuteReaderAsync();
 
             if (reader.HasRows)
             {
                 var cachorros = new List<CachorroProcurarViewModel>();
 
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     double distance = Geography.GetDistance(reader.GetDouble("latitude"),
                                                             reader.GetDouble("longitude"),
@@ -304,14 +289,14 @@ namespace DogWalkr.Repositories
                     }
                 }
 
-                reader.Close();
-                connection.Close();
+                await reader.CloseAsync();
+                await _database.Connection.CloseAsync();
 
                 return cachorros;
             }
 
-            reader.Close();
-            connection.Close();
+            await reader.CloseAsync();
+            await _database.Connection.CloseAsync();
 
             return null;
         }

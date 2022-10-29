@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DogWalkr.Database;
 using DogWalkr.Repositories;
 using DogWalkr.ViewModels.Shared;
 using DogWalkr.ViewModels.Usuario;
@@ -10,6 +11,13 @@ namespace DogWalkr.Controllers
 {
     public class UsuarioController : Controller
     {
+        private readonly DogWalkrDb _database;
+
+        public UsuarioController(DogWalkrDb database)
+        {
+            _database = database;
+        }
+
         public IActionResult Login()
         {
             return View();
@@ -27,7 +35,9 @@ namespace DogWalkr.Controllers
             {
                 viewModel.Id = Guid.NewGuid();
 
-                var repository = new UsuarioRepository();
+                await _database.Connection.OpenAsync();
+
+                var repository = new UsuarioRepository(_database);
 
                 await repository.Create(viewModel);
 
@@ -42,7 +52,7 @@ namespace DogWalkr.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Editar()
+        public async Task<IActionResult> Editar()
         {
             string usuarioId = HttpContext.Session.GetString("userId");
 
@@ -51,9 +61,11 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new UsuarioRepository();
+            await _database.Connection.OpenAsync();
 
-            var usuario = repository.Get(Guid.Parse(usuarioId));
+            var repository = new UsuarioRepository(_database);
+
+            var usuario = await repository.Get(Guid.Parse(usuarioId));
 
             var viewModel = new UsuarioEditarViewModel
             {
@@ -83,7 +95,9 @@ namespace DogWalkr.Controllers
 
             if (ModelState.IsValid)
             {
-                var repository = new UsuarioRepository();
+                await _database.Connection.OpenAsync();
+
+                var repository = new UsuarioRepository(_database);
 
                 await repository.Update(usuario);
 
@@ -101,13 +115,15 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Entrar(LoginViewModel viewModel)
+        public async Task<IActionResult> Entrar(LoginViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var repository = new UsuarioRepository();
+                await _database.Connection.OpenAsync();
 
-                var usuario = repository.Get(viewModel.Login, viewModel.Senha);
+                var repository = new UsuarioRepository(_database);
+
+                var usuario = await repository.Get(viewModel.Login, viewModel.Senha);
 
                 if (usuario == null)
                 {
@@ -142,7 +158,7 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Curtir(Guid id)
+        public async Task<IActionResult> Curtir(Guid id)
         {
             string usuarioId = HttpContext.Session.GetString("userId");
 
@@ -151,9 +167,11 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new UsuarioRepository();
+            await _database.Connection.OpenAsync();
 
-            string response = repository.Like(Guid.Parse(usuarioId), id);
+            var repository = new UsuarioRepository(_database);
+
+            string response = await repository.Like(Guid.Parse(usuarioId), id);
 
             if (response == "MATCH")
             {
@@ -168,7 +186,7 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Ignorar(Guid id)
+        public async Task<IActionResult> Ignorar(Guid id)
         {
             string usuarioId = HttpContext.Session.GetString("userId");
 
@@ -177,15 +195,17 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new UsuarioRepository();
+            await _database.Connection.OpenAsync();
 
-            repository.Ignore(Guid.Parse(usuarioId), id);
+            var repository = new UsuarioRepository(_database);
+
+            await repository.Ignore(Guid.Parse(usuarioId), id);
 
             TempData["ignorar"] = "Esse passeador não aparecerá novamente.";
             return RedirectToAction("Procurar", "Passeador");
         }
 
-        public IActionResult ListarMatches()
+        public async Task<IActionResult> ListarMatches()
         {
             string usuarioId = HttpContext.Session.GetString("userId");
 
@@ -194,9 +214,11 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new UsuarioRepository();
+            await _database.Connection.OpenAsync();
 
-            var passeadores = repository.GetMatches(Guid.Parse(usuarioId));
+            var repository = new UsuarioRepository(_database);
+
+            var passeadores = await repository.GetMatches(Guid.Parse(usuarioId));
 
             return View(passeadores);
         }

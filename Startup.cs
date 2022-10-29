@@ -1,3 +1,4 @@
+using DogWalkr.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +23,7 @@ namespace DogWalkr
         {
             services.AddControllersWithViews();
 
-            services.AddTransient(_ => new MySqlConnection(Configuration["ConnectionStrings:Default"]));
+            services.AddTransient(_ => new DogWalkrDb(Configuration["ConnectionStrings:Default"]));
 
             services.Configure<CookiePolicyOptions>(options =>
             {

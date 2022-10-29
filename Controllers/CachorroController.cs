@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using DogWalkr.Database;
 using DogWalkr.Repositories;
 using DogWalkr.ViewModels.Cachorro;
 using Microsoft.AspNetCore.Hosting;
@@ -10,10 +12,12 @@ namespace DogWalkr.Controllers
     public class CachorroController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly DogWalkrDb _database;
 
-        public CachorroController(IWebHostEnvironment webHostEnvironment)
+        public CachorroController(IWebHostEnvironment webHostEnvironment, DogWalkrDb database)
         {
             _webHostEnvironment = webHostEnvironment;
+            _database = database;
         }
 
         public IActionResult Cadastrar()
@@ -27,7 +31,7 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Cadastrar(CachorroCadastrarViewModel viewModel)
+        public async Task<IActionResult> Cadastrar(CachorroCadastrarViewModel viewModel)
         {
             string usuarioId = HttpContext.Session.GetString("userId");
 
@@ -42,9 +46,11 @@ namespace DogWalkr.Controllers
                 viewModel.UsuarioId = Guid.Parse(usuarioId);
                 viewModel.WebRootPath = _webHostEnvironment.WebRootPath;
 
-                var repository = new CachorroRepository();
+                await _database.Connection.OpenAsync();
 
-                repository.Create(viewModel);
+                var repository = new CachorroRepository(_database);
+
+                await repository.Create(viewModel);
 
                 ModelState.Clear();
 
@@ -56,7 +62,7 @@ namespace DogWalkr.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Listar()
+        public async Task<IActionResult> Listar()
         {
             string usuarioId = HttpContext.Session.GetString("userId");
 
@@ -65,23 +71,27 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new CachorroRepository();
+            await _database.Connection.OpenAsync();
 
-            var lista = repository.GetAll(Guid.Parse(usuarioId));
+            var repository = new CachorroRepository(_database);
+
+            var lista = await repository.GetAll(Guid.Parse(usuarioId));
 
             return View(lista);
         }
 
-        public IActionResult Editar(Guid id)
+        public async Task<IActionResult> Editar(Guid id)
         {
             if (HttpContext.Session.GetString("userId") == null)
             {
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new CachorroRepository();
+            await _database.Connection.OpenAsync();
 
-            var cachorro = repository.Get(id);
+            var repository = new CachorroRepository(_database);
+
+            var cachorro = await repository.Get(id);
 
             var viewModel = new CachorroEditarViewModel
             {
@@ -100,7 +110,7 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Editar(CachorroEditarViewModel viewModel)
+        public async Task<IActionResult> Editar(CachorroEditarViewModel viewModel)
         {
             if (HttpContext.Session.GetString("userId") == null)
             {
@@ -111,9 +121,11 @@ namespace DogWalkr.Controllers
             {
                 viewModel.WebRootPath = _webHostEnvironment.WebRootPath;
 
-                var repository = new CachorroRepository();
+                await _database.Connection.OpenAsync();
 
-                repository.Update(viewModel);
+                var repository = new CachorroRepository(_database);
+
+                await repository.Update(viewModel);
 
                 TempData["sucesso"] = "Alterações salvas com sucesso!";
                 return RedirectToAction("Listar");
@@ -124,7 +136,7 @@ namespace DogWalkr.Controllers
         }
 
         [HttpPost]
-        public IActionResult Apagar(Guid id)
+        public async Task<IActionResult> Apagar(Guid id)
         {
             string usuarioId = HttpContext.Session.GetString("userId");
 
@@ -133,14 +145,16 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Usuario");
             }
 
-            var repository = new CachorroRepository();
+            await _database.Connection.OpenAsync();
 
-            repository.Delete(id, Guid.Parse(usuarioId));
+            var repository = new CachorroRepository(_database);
+
+            await repository.Delete(id, Guid.Parse(usuarioId));
 
             return RedirectToAction("Listar");
         }
 
-        public IActionResult Procurar()
+        public async Task<IActionResult> Procurar()
         {
             string passeadorId = HttpContext.Session.GetString("userId");
 
@@ -149,9 +163,11 @@ namespace DogWalkr.Controllers
                 return RedirectToAction("Entrar", "Passeador");
             }
 
-            var repository = new CachorroRepository();
+            await _database.Connection.OpenAsync();
 
-            var cachorros = repository.Search(Guid.Parse(passeadorId));
+            var repository = new CachorroRepository(_database);
+
+            var cachorros = await repository.Search(Guid.Parse(passeadorId));
 
             return View(cachorros);
         }
